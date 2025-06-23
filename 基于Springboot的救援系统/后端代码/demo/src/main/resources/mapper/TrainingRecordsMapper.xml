@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TrainingRecordMapper">
+
+    <insert id="insert" parameterType="com.example.entity.TrainingRecord">
+        INSERT INTO training_records (volunteer_id, training_date, training_topic, duration)
+        VALUES (#{volunteerId}, #{trainingDate}, #{trainingTopic}, #{duration})
+    </insert>
+
+    <delete id="deleteById" parameterType="java.lang.Integer">
+        DELETE FROM training_records WHERE id = #{id}
+    </delete>
+
+    <update id="updateById" parameterType="com.example.entity.TrainingRecord">
+        UPDATE training_records
+        SET volunteer_id = #{volunteerId},
+            training_date = #{trainingDate},
+            training_topic = #{trainingTopic},
+            duration = #{duration}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" parameterType="java.lang.Integer" resultType="com.example.entity.TrainingRecord">
+        SELECT * FROM training_records WHERE id = #{id}
+    </select>
+
+    <select id="selectPage" parameterType="java.lang.Integer" resultType="com.example.entity.TrainingRecord">
+        SELECT * FROM training_records
+        <where>
+            <if test="trainingTopic != null and trainingTopic != ''">
+                AND training_topic LIKE CONCAT('%', #{trainingTopic}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

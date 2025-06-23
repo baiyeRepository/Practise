@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.VolunteerMapper">
+
+    <sql id="Base_Column_List">
+        id,username,password,name,avatar,phone,birth,sex,info,card_img,card_no,role,free
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Volunteer">
+        select
+        <include refid="Base_Column_List" />
+        from volunteer
+        <where>
+            <if test="id != null"> and id = #{id}</if>
+            <if test="username != null"> and username like concat('%', #{username}, '%')</if>
+            <if test="password != null"> and password like concat('%', #{password}, '%')</if>
+            <if test="name != null"> and name like concat('%', #{name}, '%')</if>
+            <if test="avatar != null"> and avatar like concat('%', #{avatar}, '%')</if>
+            <if test="phone != null"> and phone like concat('%', #{phone}, '%')</if>
+            <if test="birth != null"> and birth like concat('%', #{birth}, '%')</if>
+            <if test="sex != null"> and sex like concat('%', #{sex}, '%')</if>
+            <if test="info != null"> and info like concat('%', #{info}, '%')</if>
+            <if test="cardImg != null"> and card_img like concat('%', #{cardImg}, '%')</if>
+            <if test="cardNo != null"> and card_no like concat('%', #{cardNo}, '%')</if>
+            <if test="role != null"> and role like concat('%', #{role}, '%')</if>
+            <if test="free != null"> and free like concat('%', #{free}, '%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Volunteer">
+        select
+        <include refid="Base_Column_List" />
+        from volunteer
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from volunteer
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Volunteer" useGeneratedKeys="true" keyProperty="id">
+        insert into volunteer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="name != null">name,</if>
+            <if test="avatar != null">avatar,</if>
+            <if test="phone != null">phone,</if>
+            <if test="birth != null">birth,</if>
+            <if test="sex != null">sex,</if>
+            <if test="info != null">info,</if>
+            <if test="cardImg != null">card_img,</if>
+            <if test="cardNo != null">card_no,</if>
+            <if test="role != null">role,</if>
+            <if test="free != null">free,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="name != null">#{name},</if>
+            <if test="avatar != null">#{avatar},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="birth != null">#{birth},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="info != null">#{info},</if>
+            <if test="cardImg != null">#{cardImg},</if>
+            <if test="cardNo != null">#{cardNo},</if>
+            <if test="role != null">#{role},</if>
+            <if test="free != null">#{free},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Volunteer">
+        update volunteer
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="birth != null">
+                birth = #{birth},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="info != null">
+                info = #{info},
+            </if>
+            <if test="cardImg != null">
+                card_img = #{cardImg},
+            </if>
+            <if test="cardNo != null">
+                card_no = #{cardNo},
+            </if>
+            <if test="role != null">
+                role = #{role},
+            </if>
+            <if test="free != null">
+                free = #{free},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="getIdByUsername" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT id FROM volunteer WHERE username = #{username}
+    </select>
+</mapper>

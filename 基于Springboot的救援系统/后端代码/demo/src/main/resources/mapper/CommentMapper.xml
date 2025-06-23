@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CommentMapper">
+
+    <sql id="Base_Column_List">
+        id,content,user_id,admin_id,pid,time,root_id,role
+    </sql>
+    <!--查询全部-->
+    <select id="selectAll" resultType="com.example.entity.Comment">
+        select
+        comment.*,
+        case
+        when comment.role = 'user' then user.name
+        when comment.role = 'admin' then admin.name
+        end as userName,
+        case
+        when comment.role = 'user' then user.avatar
+        when comment.role = 'admin' then admin.avatar
+        end as avatar
+        from comment
+        left join user on comment.user_id = user.id and comment.role = 'user'
+        left join admin on comment.admin_id = admin.id and comment.role = 'admin'
+        <where>
+            <if test="userName != null"> and (user.name like concat('%', #{userName}, '%') or admin.name like concat('%', #{userName}, '%'))</if>
+        </where>
+        order by comment.id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Comment">
+        select
+        <include refid="Base_Column_List" />
+        from comment
+        where id = #{id}
+    </select>
+
+    <select id="selectRoot" resultType="com.example.entity.Comment">
+        select
+            comment.*,
+            case
+                when comment.role = 'user' then user.name
+                when comment.role = 'admin' then admin.name
+                end as userName,
+            case
+                when comment.role = 'user' then user.avatar
+                when comment.role = 'admin' then admin.avatar
+                end as avatar
+        from comment
+                 left join user on comment.user_id = user.id and comment.role = 'user'
+                 left join admin on comment.admin_id = admin.id and comment.role = 'admin'
+        where comment.pid is null
+        order by comment.id desc
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        select count(*) from comment where id is not null
+    </select>
+
+    <select id="selectByRootId" resultType="com.example.entity.Comment">
+        select
+            c1.*,
+            case
+                when c1.role = 'user' then u1.name
+                when c1.role = 'admin' then a1.name
+                end as userName,
+            case
+                when c1.role = 'user' then u1.avatar
+                when c1.role = 'admin' then a1.avatar
+                end as avatar,
+            case
+                when c2.role = 'user' then u2.name
+                when c2.role = 'admin' then a2.name
+                end as parentUserName
+        from comment c1
+                 left join user u1 on c1.user_id = u1.id and c1.role = 'user'
+                 left join admin a1 on c1.admin_id = a1.id and c1.role = 'admin'
+                 left join comment c2 on c1.pid = c2.id
+                 left join user u2 on c2.user_id = u2.id and c2.role = 'user'
+                 left join admin a2 on c2.admin_id = a2.id and c2.role = 'admin'
+        where c1.pid is not null and c1.root_id = #{rootId}
+        order by c1.id desc
+    </select>
+
+    <delete id="deleteById">
+        update comment
+        set content = null
+        where id = #{id}
+    </delete>
+    <delete id="CompleteDeleteById">
+        delete from comment where id = #{id}
+    </delete>
+
+
+    <insert id="insert" parameterType="com.example.entity.Comment" useGeneratedKeys="true" keyProperty="id">
+        insert into comment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="content != null">content,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="adminId != null">admin_id,</if>
+            <if test="pid != null">pid,</if>
+            <if test="time != null">time,</if>
+            <if test="rootId != null">root_id,</if>
+            <if test="role != null">role,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="content != null">#{content},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="adminId != null">#{adminId},</if>
+            <if test="pid != null">#{pid},</if>
+            <if test="time != null">#{time},</if>
+            <if test="rootId != null">#{rootId},</if>
+            <if test="role != null">#{role},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Comment">
+        update comment
+        <set>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="adminId != null">
+                admin_id = #{adminId},
+            </if>
+            <if test="pid != null">
+                pid = #{pid},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="rootId != null">
+                root_id = #{rootId},
+            </if>
+            <if test="role != null">
+                role = #{role},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

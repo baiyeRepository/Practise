@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.VolApplyMapper">
+
+    <sql id="Base_Column_List">
+        id,user_id,status,phone,sex,birth,card_img,info,time,card_no
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.VolApply">
+        select vol_apply.*, user.name as userName
+        from vol_apply
+        left join user on vol_apply.user_id = user.id
+        <where>
+            <if test="id != null"> and id = #{id}</if>
+            <if test="userId != null"> and user_id = #{userId}</if>
+            <if test="status != null"> and status like concat('%', #{status}, '%')</if>
+            <if test="phone != null"> and phone like concat('%', #{phone}, '%')</if>
+            <if test="sex != null"> and sex like concat('%', #{sex}, '%')</if>
+            <if test="birth != null"> and birth like concat('%', #{birth}, '%')</if>
+            <if test="cardImg != null"> and card_img like concat('%', #{cardImg}, '%')</if>
+            <if test="info != null"> and info like concat('%', #{info}, '%')</if>
+            <if test="time != null"> and time like concat('%', #{time}, '%')</if>
+            <if test="cardNo != null"> and card_no like concat('%', #{cardNo}, '%')</if>
+            <if test="userName != null and userName != ''">
+                and user.name like concat('%', #{userName}, '%')
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.VolApply">
+        select
+        <include refid="Base_Column_List" />
+        from vol_apply
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from vol_apply
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.VolApply" useGeneratedKeys="true" keyProperty="id">
+        insert into vol_apply
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="status != null">status,</if>
+            <if test="phone != null">phone,</if>
+            <if test="sex != null">sex,</if>
+            <if test="birth != null">birth,</if>
+            <if test="cardImg != null">card_img,</if>
+            <if test="info != null">info,</if>
+            <if test="time != null">time,</if>
+            <if test="cardNo != null">card_no,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="birth != null">#{birth},</if>
+            <if test="cardImg != null">#{cardImg},</if>
+            <if test="info != null">#{info},</if>
+            <if test="time != null">#{time},</if>
+            <if test="cardNo != null">#{cardNo},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.VolApply">
+        update vol_apply
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="birth != null">
+                birth = #{birth},
+            </if>
+            <if test="cardImg != null">
+                card_img = #{cardImg},
+            </if>
+            <if test="info != null">
+                info = #{info},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="cardNo != null">
+                card_no = #{cardNo},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

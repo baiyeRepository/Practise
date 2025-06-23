@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.KnowledgeMapper">
+
+    <sql id="Base_Column_List">
+        id,title,content,read_count,date
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Knowledge">
+        select
+        <include refid="Base_Column_List" />
+        from knowledge
+        <where>
+            <if test="id != null"> and id = #{id}</if>
+            <if test="title != null"> and title like concat('%', #{title}, '%')</if>
+            <if test="content != null"> and content like concat('%', #{content}, '%')</if>
+            <if test="readCount != null"> and read_count = #{readCount}</if>
+            <if test="date != null"> and date like concat('%', #{date}, '%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Knowledge">
+        select
+        <include refid="Base_Column_List" />
+        from knowledge
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from knowledge
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Knowledge" useGeneratedKeys="true" keyProperty="id">
+        insert into knowledge
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="readCount != null">read_count,</if>
+            <if test="date != null">date,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="readCount != null">#{readCount},</if>
+            <if test="date != null">#{date},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Knowledge">
+        update knowledge
+        <set>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="readCount != null">
+                read_count = #{readCount},
+            </if>
+            <if test="date != null">
+                date = #{date},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>
